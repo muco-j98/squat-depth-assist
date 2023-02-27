@@ -5,9 +5,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.camera.core.CameraSelector
+import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -15,8 +16,10 @@ import com.muco.squatdepthassist.R
 import com.muco.squatdepthassist.databinding.FragmentCameraBinding
 import com.muco.squatdepthassist.ui.viewmodel.CameraViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import timber.log.Timber
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
+
 
 @AndroidEntryPoint
 class CameraFragment : Fragment() {
@@ -40,7 +43,7 @@ class CameraFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.flipCameraBtn.setOnClickListener {
-            vm.flipCamera()
+            vm.flipCameraLens()
             startCamera()
         }
     }
@@ -52,9 +55,19 @@ class CameraFragment : Fragment() {
                 val cameraProvider = processCameraProvider.get()
                 val previewUseCase = Preview.Builder().build()
                 previewUseCase.setSurfaceProvider(binding.cameraPreviewView.surfaceProvider)
+                val imageAnalysis = ImageAnalysis.Builder()
+                    .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
+                    .build()
+
+                imageAnalysis.setAnalyzer(
+                    ContextCompat.getMainExecutor(requireContext())
+                ) { image ->
+                    Timber.tag("jhnn").i("test")
+                    image.close()
+                }
 
                 cameraProvider.unbindAll()
-                cameraProvider.bindToLifecycle(viewLifecycleOwner, vm.lensFacing, previewUseCase)
+                cameraProvider.bindToLifecycle(viewLifecycleOwner, vm.lensFacing, imageAnalysis, previewUseCase)
             } catch (e: java.lang.Exception) {
                 Toast.makeText(requireContext(), R.string.AL_03, Toast.LENGTH_SHORT).show()
             }

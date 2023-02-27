@@ -1,13 +1,18 @@
 package com.muco.squatdepthassist.ui.fragment
 
+import android.Manifest
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import com.muco.squatdepthassist.R
 import com.muco.squatdepthassist.databinding.FragmentHomeBinding
+import com.muco.squatdepthassist.utils.Constants
+import com.muco.squatdepthassist.utils.HelperFunctions.concat
 import com.muco.squatdepthassist.utils.safeNavigate
+import pub.devrel.easypermissions.EasyPermissions
 
 class HomeFragment: Fragment() {
 
@@ -27,8 +32,15 @@ class HomeFragment: Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.homeButton.setOnClickListener {
-            //Todo check if user has granted camera access
-            findNavController().safeNavigate(HomeFragmentDirections.actionHomeFragmentToCameraFragment())
+            val perms = arrayOf(Manifest.permission.CAMERA)
+            if (EasyPermissions.hasPermissions(requireContext(), *perms)) {
+                findNavController().safeNavigate(HomeFragmentDirections.actionHomeFragmentToCameraFragment())
+            } else {
+                EasyPermissions.requestPermissions(
+                    this, getString(R.string.AL_02),
+                    Constants.RC_CAMERA, concat(*perms)
+                )
+            }
         }
     }
 

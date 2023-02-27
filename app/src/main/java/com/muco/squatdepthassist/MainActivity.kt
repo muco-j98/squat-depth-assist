@@ -5,6 +5,8 @@ import android.os.Bundle
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import com.muco.squatdepthassist.utils.Constants.RC_CAMERA
+import com.muco.squatdepthassist.utils.HelperFunctions
+import com.muco.squatdepthassist.utils.HelperFunctions.concat
 import dagger.hilt.android.AndroidEntryPoint
 import pub.devrel.easypermissions.AfterPermissionGranted
 import pub.devrel.easypermissions.AppSettingsDialog
@@ -55,9 +57,5 @@ class MainActivity : AppCompatActivity(), EasyPermissions.PermissionCallbacks {
                 RC_CAMERA, concat(*perms)
             )
         }
-    }
-
-    private fun concat(vararg strings: String): String {
-        return strings.fold("") { acc, next -> "$acc$next" }
     }
 }
