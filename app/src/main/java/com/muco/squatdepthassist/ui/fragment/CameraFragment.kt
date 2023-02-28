@@ -14,6 +14,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.muco.squatdepthassist.R
 import com.muco.squatdepthassist.databinding.FragmentCameraBinding
+import com.muco.squatdepthassist.ml.MoveNet
 import com.muco.squatdepthassist.ui.viewmodel.CameraViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
@@ -58,6 +59,8 @@ class CameraFragment : Fragment() {
                 val imageAnalysis = ImageAnalysis.Builder()
                     .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
                     .build()
+
+                MoveNet.create(requireContext(), vm.device)
 
                 imageAnalysis.setAnalyzer(
                     ContextCompat.getMainExecutor(requireContext())
