@@ -75,14 +75,14 @@ class CameraFragment : Fragment() {
                         vm.bitmap = image.image?.toBitmap()
                         vm.rotateBitmap()
                         vm.processImage(vm.bitmap)
-                        collectLatestFlow(vm.persons) { persons ->
-                            vm.bitmap?.let { bitmap ->
-                                visualize(persons, bitmap)
-                            }
-                        }
                         image.close()
                     }
 
+                    collectLatestFlow(vm.persons) { persons ->
+                        vm.bitmap?.let { bitmap ->
+                            visualize(persons, bitmap)
+                        }
+                    }
                     cameraProvider.unbindAll()
                     cameraProvider.bindToLifecycle(
                         viewLifecycleOwner,
