@@ -32,6 +32,13 @@ class MoveNet(private val interpreter: Interpreter, private var gpuDelegate: Gpu
         private const val LIGHTNING_FILENAME = "movenet_lightning.tflite"
         private const val THUNDER_FILENAME = "movenet_thunder.tflite"
 
+        const val PREVIEW_WIDTH = 640
+        const val PREVIEW_HEIGHT = 480
+
+        /** Threshold for confidence score. */
+        const val MIN_CONFIDENCE = .2f
+
+
         fun create(context: Context, device: Device): MoveNet {
             val options = Interpreter.Options()
             var gpuDelegate: GpuDelegate? = null
@@ -45,7 +52,7 @@ class MoveNet(private val interpreter: Interpreter, private var gpuDelegate: Gpu
                 Device.NNAPI -> options.setUseNNAPI(true)
             }
             return MoveNet(
-                Interpreter(FileUtil.loadMappedFile(context, LIGHTNING_FILENAME), options),
+                Interpreter(FileUtil.loadMappedFile(context, THUNDER_FILENAME), options),
                 gpuDelegate
             )
         }
